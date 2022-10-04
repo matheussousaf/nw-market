@@ -1,19 +1,17 @@
-import { Perk, Prisma } from '@prisma/client';
-
-export enum ItemWeight {
-  LIGHT = 'LIGHT',
-  MEDIUM = 'MEDIUM',
-  HEAVY = 'HEAVY',
-}
+import { Attribute, Perk, ItemWeight } from '@prisma/client';
 
 export enum ItemRarity {
   EPIC = 0,
   LEGENDARY = 1,
 }
 
+interface ItemPerk extends Perk {
+  attributes: Attribute[];
+}
+
 export class CreateItemDto {
   name: string;
   weight: ItemWeight;
-  perks: any[];
+  perks: ItemPerk[];
   rarity: number;
 }

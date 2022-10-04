@@ -3,9 +3,9 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { Item } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 import { CreateItemDto } from './dto/create-item.dto';
-
 @Injectable()
 export class ItemService {
   constructor(private primaService: PrismaService) {}
