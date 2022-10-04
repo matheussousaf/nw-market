@@ -1,0 +1,74 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity", "interactiveTransactions"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model User {
+  id        String  @id @default(uuid())
+  name      String?
+  discordId String?
+  active    Boolean
+  items     Item[]
+  offers    Offer[]
+}
+
+model Attribute {
+  id     String  @id @default(uuid())
+  name   String
+  value  Int
+  perk   Perk?   @relation(fields: [perkId], references: [id], onDelete: Cascade)
+  perkId String?
+}
+
+model Perk {
+  id         String      @id @default(uuid())
+  name       String
+  type       PerkType
+  item       Item?       @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  itemId     String?
+  attributes Attribute[]
+}
+
+model Item {
+  id           String        @id @default(uuid())
+  name         String
+  perks        Perk[]
+  weight       String
+  rarity       Int
+  User         User?         @relation(fields: [userId], references: [id])
+  userId       String?
+  announcement Announcement?
+}
+
+model Announcement {
+  id             String   @id @default(uuid())
+  initialPrice   Int
+  buyOutPrice    Int
+  userId         String
+  canDeliver     Boolean
+  endDate        DateTime
+  item           Item     @relation(fields: [itemId], references: [id])
+  itemId         String   @unique
+  currentOffer   Offer    @relation(fields: [currentOfferId], references: [id])
+  currentOfferId String   @unique
+}
+
+model Offer {
+  id           String        @id @default(uuid())
+  value        Int
+  user         User?         @relation(fields: [userId], references: [id])
+  Announcement Announcement?
+  userId       String?
+}
+
+enum PerkType {
+  Inherent
+  Gem
+  Generated
+}
